@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+from django.conf import settings
+from django.views import static
+
 import xadmin
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
+    url(r'^froala_editor/', include('froala_editor.urls')),
+    url(r'^media/(.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}),
 ]
+
+
+
