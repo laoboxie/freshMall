@@ -18,13 +18,29 @@ from django.urls import path
 from django.conf.urls import url, include
 from django.conf import settings
 from django.views import static
-
+from rest_framework.documentation import include_docs_urls
+from rest_framework import routers
 import xadmin
+
+
+from goods.views import GoodsView
+
+router = routers.SimpleRouter()
+#配置goods的url
+router.register(r'goods', GoodsView, base_name="goods")
+
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     url(r'^froala_editor/', include('froala_editor.urls')),
     url(r'^media/(.*)$', static.serve, {'document_root': settings.MEDIA_ROOT}),
+    # apps
+    url(r'', include(router.urls)),
+    # api文档
+    path('docs/', include_docs_urls(title='生鲜电商')),
+    path('api-auth/', include('rest_framework.urls')),
+
 ]
+
 
 
 
