@@ -23,11 +23,12 @@ from rest_framework import routers
 import xadmin
 
 
-from goods.views import GoodsView
+from goods.views import GoodsView, GoodsCategoryView
 
 router = routers.SimpleRouter()
 #配置goods的url
 router.register(r'goods', GoodsView, base_name="goods")
+router.register(r'categorys', GoodsCategoryView, base_name="category")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),

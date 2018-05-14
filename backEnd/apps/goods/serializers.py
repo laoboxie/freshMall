@@ -8,9 +8,27 @@ class GoodsCategorySerializers(serializers.ModelSerializer):
         model = GoodsCategory
         fields = "__all__"
 
+
+class GoodsCategorySerializers1(serializers.ModelSerializer):
+    sub_cat = GoodsCategorySerializers(many=True)
+
+    class Meta:
+        model = GoodsCategory
+        fields = "__all__"
+
+
+class GoodsCategorySerializers2(serializers.ModelSerializer):
+    sub_cat = GoodsCategorySerializers1(many=True)
+
+    class Meta:
+        model = GoodsCategory
+        fields = "__all__"
+
+
 class GoodsSerializers(serializers.ModelSerializer):
     category = GoodsCategorySerializers()
+
     class Meta:
         model = Goods
-        fields = ("id", "name", "category", "shop_price")
+        fields = "__all__"
 

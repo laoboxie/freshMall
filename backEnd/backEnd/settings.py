@@ -52,15 +52,11 @@ INSTALLED_APPS = [
     'froala_editor',
     'rest_framework',
     'django_filters',
+    'corsheaders',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
-}
-
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -155,3 +151,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 FILE_UPLOAD_PATH = os.path.join(MEDIA_ROOT, '/')
 
+
+# django-filter的设置
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
+
+
+# cors的设置
+from corsheaders.defaults import default_headers
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8080',
+)
+CORS_ALLOW_HEADERS = default_headers + (
+
+)

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters import rest_framework
 from rest_framework.pagination import PageNumberPagination
-from .serializers import GoodsSerializers
+from .serializers import GoodsSerializers, GoodsCategorySerializers2
 from .models import Goods, GoodsCategory
 from .filters import GoodsFilter
 from django.core import serializers
@@ -35,20 +35,21 @@ class ResponseJson():
 
 
 class StandardPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 12
     page_size_query_param = 'page_size'
     max_page_size = 100
-    page_query_param = 'page_index'
+    page_query_param = 'page'
 
 
-class GoodsView(mixins.ListModelMixin, viewsets.GenericViewSet):
+class GoodsView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializers
     pagination_class = StandardPagination
-    filter_backends = (rest_framework.DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter,)
     filter_class = GoodsFilter
-    ordering_fields = ('shop_price',)
-    search_fields = ('name',)
+    # django-filter
+    filter_backends = (rest_framework.DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter,)
+    ordering_fields = ('shop_price', 'sold_num', 'add_time')
+    search_fields = ('name', 'goods_desc', 'goods_brief')
 
     # def get(self, request, format=None):
     #     goods = Goods.objects.all()[:10]
@@ -57,5 +58,13 @@ class GoodsView(mixins.ListModelMixin, viewsets.GenericViewSet):
     #     res = ResponseJson()
     #     res.setResult(goods_serializer)
     #     return Response(res.response())
+
+
+class GoodsCategoryView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = GoodsCategory.objects.filter(category_type=1)
+    serializer_class = GoodsCategorySerializers2
+
+
+
 
 
