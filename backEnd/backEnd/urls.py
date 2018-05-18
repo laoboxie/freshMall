@@ -18,8 +18,10 @@ from django.urls import path
 from django.conf.urls import url, include
 from django.conf import settings
 from django.views import static
-from rest_framework.documentation import include_docs_urls
 from rest_framework import routers
+from rest_framework.documentation import include_docs_urls
+from rest_framework.authtoken import views
+from rest_framework_jwt.views import obtain_jwt_token
 import xadmin
 
 
@@ -39,6 +41,9 @@ urlpatterns = [
     # api文档
     path('docs/', include_docs_urls(title='生鲜电商')),
     path('api-auth/', include('rest_framework.urls')),
+
+    url(r'^api-token-auth/', views.obtain_auth_token),
+    url(r'^jwt-auth/', obtain_jwt_token),
 
 ]
 

@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters import rest_framework
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.authentication import TokenAuthentication
 from .serializers import GoodsSerializers, GoodsCategorySerializers2
 from .models import Goods, GoodsCategory
 from .filters import GoodsFilter
@@ -45,6 +46,7 @@ class GoodsView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gener
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializers
     pagination_class = StandardPagination
+    # authentication_classes = (TokenAuthentication,)
     filter_class = GoodsFilter
     # django-filter
     filter_backends = (rest_framework.DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter,)

@@ -51,8 +51,10 @@ INSTALLED_APPS = [
     'xadmin',
     'froala_editor',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
+
 ]
 
 MIDDLEWARE = [
@@ -152,11 +154,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 FILE_UPLOAD_PATH = os.path.join(MEDIA_ROOT, '/')
 
 
-# django-filter的设置
+# drf的设置
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    )
 }
 
 
