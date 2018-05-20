@@ -177,3 +177,17 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ALLOW_HEADERS = default_headers + (
 
 )
+
+# 自定义用户处理
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
+# 邮件设置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '594502135@qq.com'
+EMAIL_HOST_PASSWORD = 'wbtgsaherxwobdai'
+DEFAULT_FROM_EMAIL = '594502135@qq.com'
+

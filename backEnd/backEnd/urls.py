@@ -26,11 +26,12 @@ import xadmin
 
 
 from goods.views import GoodsView, GoodsCategoryView
-
+from users.views import SmsCodeViewset
 router = routers.SimpleRouter()
 #配置goods的url
 router.register(r'goods', GoodsView, base_name="goods")
 router.register(r'categorys', GoodsCategoryView, base_name="category")
+router.register(r'smscode', SmsCodeViewset, base_name="smscode")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
@@ -41,9 +42,10 @@ urlpatterns = [
     # api文档
     path('docs/', include_docs_urls(title='生鲜电商')),
     path('api-auth/', include('rest_framework.urls')),
-
+    # drf自带token
     url(r'^api-token-auth/', views.obtain_auth_token),
-    url(r'^jwt-auth/', obtain_jwt_token),
+    # drf-jwt的token
+    url(r'^login/', obtain_jwt_token),
 
 ]
 
