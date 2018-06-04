@@ -31,3 +31,48 @@ class SmsCodeSerializer(serializers.Serializer):
             raise serializers.ValidationError("发送频率过快，请稍后重试")
 
         return account
+
+
+class UserRegSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(required=True, min_length=4, max_length=6, label="验证码", write_only=True,
+                                 error_messages={
+                                     "blank": "请输入验证码",
+                                     "required": "请输入验证码",
+                                     "max_length": "验证码格式错误",
+                                     "min_length": "验证码格式错误"
+                                 })
+
+    password = serializers.CharField(style={'input_type': 'password'}, label="密码", write_only=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "code", "password")
+
+    # def create(self, validated_data):
+    #     user = super(UserRegSerializer, self).create(validated_data=validated_data)
+    #     user.set_password(validated_data["password"])
+    #     user.save()
+    #     return user
+
+    def validate_code(self, code):
+        verify_records = VerifyCode.objects.filter(account=self.initial_data["username"])\
+                        .order_by("-add_time")
+        if verify_records.count():
+            last_record = verify_records[0]
+            validate_time = timedelta(minutes=5)
+            if datetime.now()-last_record.add_time>validate_time:
+                raise serializers.ValidationError("验证码已过期")
+
+            if last_record.code != code:
+                raise serializers.ValidationError("验证码错误")
+        else:
+            raise serializers.ValidationError("请先获取验证码")
+
+        return code
+
+    def validate(self, attrs):
+        attrs["email"] = attrs["username"]
+        del attrs["code"]
+        return attrs
+
+

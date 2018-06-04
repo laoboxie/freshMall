@@ -6,10 +6,11 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from random import choice
+from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
-from apps.utils.sendemail import SendSmsEmail
+from apps.utils.sendemail import SendEmail
 from .models import VerifyCode
-from .serializers import SmsCodeSerializer
+from .serializers import SmsCodeSerializer, UserRegSerializer
 # Create your views here.
 User = get_user_model()
 
@@ -46,19 +47,51 @@ class SmsCodeViewset(CreateModelMixin, viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         account = serializer.validated_data["account"]
-        email = SendSmsEmail()
+        email_ins = SendEmail()
         code = self.generate_code()
-        send_status = email.send_email(code, account)
+        send_status = email_ins.send_smscode_email(code, account)
         if send_status == 0:
             return Response({
                 "account": "发送验证码失败"
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
+            account_record = VerifyCode.objects.filter(account=account)
+            if account_record.count():
+                account_record.delete()
+
             code_record = VerifyCode(code=code, account=account)
             code_record.save()
             return Response({
                 "account": account
             }, status=status.HTTP_201_CREATED)
+
+
+class UserRegViewset(CreateModelMixin, viewsets.GenericViewSet):
+    """
+    用户注册
+    """
+    serializer_class = UserRegSerializer
+    queryset = User.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+
+        re_dict = serializer.data
+        payload = jwt_payload_handler(user)
+        re_dict["token"] = jwt_encode_handler(payload)
+        re_dict["name"] = user.name if user.name else user.username
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+
+
+
 
 
 
