@@ -27,12 +27,14 @@ import xadmin
 
 from goods.views import GoodsView, GoodsCategoryView
 from users.views import SmsCodeViewset, UserRegViewset
+from user_operation.views import UserFavViewset
 router = routers.SimpleRouter()
 #配置goods的url
 router.register(r'goods', GoodsView, base_name="goods")
 router.register(r'categorys', GoodsCategoryView, base_name="category")
 router.register(r'smscode', SmsCodeViewset, base_name="smscode")
 router.register(r'users', UserRegViewset, base_name="users")
+router.register(r'userfav', UserFavViewset, base_name="userfav")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),

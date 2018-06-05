@@ -7,7 +7,7 @@ from .models import Goods
 class GoodsFilter(rest_framework.FilterSet):
     pricemin = rest_framework.NumberFilter(name="shop_price", lookup_expr='gte')
     pricemax = rest_framework.NumberFilter(name="shop_price", lookup_expr='lte')
-    top_category = rest_framework.NumberFilter(name="category_id",method="category_filter")
+    top_category = rest_framework.NumberFilter(name="category_id", method="category_filter")
 
     def category_filter(self, queryset, name, value):
         return queryset.filter(Q(category_id=value) | Q(category__parent_category_id=value) |
@@ -15,4 +15,4 @@ class GoodsFilter(rest_framework.FilterSet):
 
     class Meta:
         model = Goods
-        fields = ['pricemin', 'pricemax']
+        fields = ['pricemin', 'pricemax', 'is_hot']

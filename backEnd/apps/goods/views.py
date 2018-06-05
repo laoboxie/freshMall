@@ -43,12 +43,13 @@ class StandardPagination(PageNumberPagination):
 
 
 class GoodsView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    queryset = Goods.objects.all()
+    queryset = Goods.objects.all().order_by('id')
     serializer_class = GoodsSerializers
     pagination_class = StandardPagination
     # authentication_classes = (TokenAuthentication,)
+    # 过滤
     filter_class = GoodsFilter
-    # django-filter
+    # django-filter 排序和搜索
     filter_backends = (rest_framework.DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = ('shop_price', 'sold_num', 'add_time')
     search_fields = ('name', 'goods_desc', 'goods_brief')
